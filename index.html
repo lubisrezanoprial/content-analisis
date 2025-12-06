@@ -1,12 +1,512 @@
-<!-- React & ReactDOM -->
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
 
-<!-- Babel (agar JSX bisa dibaca browser) -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-<!-- Recharts -->
-<script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- Tailwind (opsional, karena Anda pakai Tailwind) -->
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- Recharts -->
+  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    import React, { useState } from 'react';
+import { CheckCircle, XCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+
+const DetailedCodingAnalysis = () => {
+  const [expandedCodes, setExpandedCodes] = useState({});
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const toggleExpand = (id) => {
+    setExpandedCodes(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  // Data coding lengkap dengan 31 indikator
+  const codingData = [
+    {
+      id: 1,
+      category: "A. Konsep Dasar Pendidikan",
+      code: "Ta'dib",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Istilah 'ta'dib' TIDAK MUNCUL sama sekali dalam teks. Padahal ini adalah konsep kunci Al-Attas untuk pendidikan Islam.",
+      recommendation: "Gunakan istilah 'ta'dib' sebagai pengganti atau pelengkap kata 'pendidikan'. Contoh: 'STAI UISU mengembangkan ta'dib (pendidikan Islam) yang...'",
+      priority: "TINGGI"
+    },
+    {
+      id: 2,
+      category: "A. Konsep Dasar Pendidikan",
+      code: "Adab",
+      status: "implisit",
+      quotation: "ilmu-ilmu umum berkembang tanpa sentuhan etika dan spritualitas agama",
+      location: "Paragraf 1, Kalimat 5",
+      analysis: "Kata 'adab' tidak muncul eksplisit, tetapi substansinya ada melalui istilah 'etika' dan 'spiritualitas'. Adab dalam Al-Attas lebih luas dari sekadar etika - mencakup pengenalan hierarki ilmu dan penempatan yang tepat.",
+      recommendation: "Tambahkan: 'Pendidikan harus membentuk adab, yaitu disiplin tubuh, jiwa, dan ruh dalam mengenal dan mengakui hierarki ilmu pengetahuan.'",
+      priority: "TINGGI"
+    },
+    {
+      id: 3,
+      category: "B. Epistemologi Islam",
+      code: "Tawhid",
+      status: "sesuai_penuh",
+      quotation: "tauhid karena tauhid membangun kesadaran untuk mencari, mengembangkan dan mengamalkan ilmu bagian dari perintah Allah untuk tetap konsisten pada mengesakan Allah",
+      location: "Paragraf 2, Kalimat 5",
+      analysis: "SANGAT EKSPLISIT. Tauhid disebutkan sebagai dasar pengembangan ilmu, teknologi, dan seni. Ini sesuai dengan konsep Al-Attas bahwa tauhid adalah fondasi epistemologi Islam.",
+      recommendation: "Sudah baik. Pertahankan dan elaborasi lebih detail bagaimana tauhid diterapkan dalam setiap mata kuliah.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 4,
+      category: "B. Epistemologi Islam",
+      code: "'Ilm",
+      status: "sesuai_penuh",
+      quotation: "ilmu pengetahuan, teknologi dan seni adalah tauhid karena tauhid membangun kesadaran untuk mencari, mengembangkan dan mengamalkan ilmu",
+      location: "Paragraf 2, Kalimat 5",
+      analysis: "Kata 'ilmu' muncul berkali-kali. Ilmu dipahami sebagai sesuatu yang harus dicari, dikembangkan, dan diamalkan berdasarkan tauhid.",
+      recommendation: "Sudah baik, tapi perlu ditambahkan pembedaan jenis-jenis ilmu (fardhu 'ain dan fardhu kifayah).",
+      priority: "SEDANG"
+    },
+    {
+      id: 5,
+      category: "B. Epistemologi Islam",
+      code: "Ma'rifah",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "TIDAK ADA pembedaan antara ma'rifah (pengetahuan intuitif spiritual) dan 'ilm (pengetahuan rasional). Ini konsep penting dalam epistemologi Al-Attas.",
+      recommendation: "Tambahkan: 'Pendidikan mengintegrasikan 'ilm (pengetahuan rasional) dan ma'rifah (pengetahuan spiritual) sebagai dua cara mengenal Allah dan ciptaan-Nya.'",
+      priority: "TINGGI"
+    },
+    {
+      id: 6,
+      category: "B. Epistemologi Islam",
+      code: "Wahyu sebagai Sumber Ilmu",
+      status: "sesuai_penuh",
+      quotation: "STAI 'UISU' Pematangsiantar mengembangkan pendidikan yang berperspektif Al-Qur'ani yang menjadi dasar pengembangan ilmu pengetahuan, teknologi dan seni",
+      location: "Paragraf 2, Kalimat 4",
+      analysis: "EKSPLISIT. Perspektif Al-Qur'ani dijadikan dasar. Plus, ada rujukan QS. Al-Ikhlas 1-4 sebagai landasan teologis. Sesuai dengan konsep Al-Attas tentang wahyu sebagai sumber ilmu.",
+      recommendation: "Sudah baik. Bisa diperkaya dengan rujukan hadis dan bagaimana wahyu membimbing akal dalam proses ilmiah.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 7,
+      category: "C. Kritik terhadap Modernitas",
+      code: "Sekularisasi Ilmu Pengetahuan",
+      status: "sesuai_penuh",
+      quotation: "pendidikan Islam terseret dalam alam pikiran modren yang sekuler, sehingga secara tidak sadar memisahkan antara pendidikan keimanan (ilmu-ilmu agama) dengan pendidikan umum",
+      location: "Paragraf 1, Kalimat 2",
+      analysis: "SANGAT JELAS. Mengidentifikasi masalah sekularisasi dengan tajam. Istilah 'sekuler' muncul eksplisit. Ini tema sentral Al-Attas dalam kritiknya terhadap modernitas.",
+      recommendation: "Sudah sangat baik. Ini salah satu poin terkuat dalam teks.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 8,
+      category: "C. Kritik terhadap Modernitas",
+      code: "Dikotomi Ilmu",
+      status: "sesuai_penuh",
+      quotation: "melahirkan dikotomi kelompok ilmu-ilmu agama disatu pihak dan kelompok ilmu-ilmu umum (sekuler) di pihak lain",
+      location: "Paragraf 1, Kalimat 3",
+      analysis: "EKSPLISIT menggunakan kata 'dikotomi'. Menjelaskan dampaknya: reduksi ilmu agama dan pendangkalan ilmu umum. Selaras dengan kritik Al-Attas terhadap fragmentasi ilmu.",
+      recommendation: "Sudah sangat baik. Bisa ditambahkan solusi konkret bagaimana mengatasi dikotomi ini dalam struktur kurikulum.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 9,
+      category: "C. Kritik terhadap Modernitas",
+      code: "Westernisasi/Pembaratan",
+      status: "implisit",
+      quotation: "pendidikan Islam terseret dalam alam pikiran modren yang sekuler",
+      location: "Paragraf 1, Kalimat 2",
+      analysis: "Istilah 'westernisasi' atau 'pembaratan' tidak muncul, tapi substansinya ada dalam frase 'alam pikiran modren yang sekuler'. Modernitas sekuler = produk pembaratan.",
+      recommendation: "Bisa lebih eksplisit: 'Pendidikan Islam terseret dalam westernisasi melalui alam pikiran modern yang sekuler...'",
+      priority: "SEDANG"
+    },
+    {
+      id: 10,
+      category: "C. Kritik terhadap Modernitas",
+      code: "Dewesternisasi",
+      status: "implisit",
+      quotation: "STAI 'UISU' Pematangsiantar mengembangkan pendidikan yang berperspektif Al-Qur'ani",
+      location: "Paragraf 2, Kalimat 4",
+      analysis: "Upaya kembali ke perspektif Al-Qur'ani adalah bentuk dewesternisasi, meski istilah ini tidak digunakan.",
+      recommendation: "Tambahkan: 'Sebagai upaya dewesternisasi, STAI UISU mengembangkan pendidikan yang berperspektif Al-Qur'ani...'",
+      priority: "SEDANG"
+    },
+    {
+      id: 11,
+      category: "D. Islamisasi Ilmu Pengetahuan",
+      code: "Islamisasi Ilmu",
+      status: "implisit",
+      quotation: "keterpaduan antar disiplin keilmuan... ilmu-ilmu umum berkembang tanpa sentuhan etika dan spritualitas agama",
+      location: "Paragraf 1, Kalimat 3 & 5",
+      analysis: "IDE islamisasi ada (mengintegrasikan nilai Islam ke dalam ilmu), tapi istilah 'islamisasi ilmu' tidak muncul. Konsep ini SANGAT PENTING dalam pemikiran Al-Attas.",
+      recommendation: "Tambahkan paragraf khusus: 'STAI UISU mengimplementasikan islamisasi ilmu pengetahuan (Islamization of Knowledge) melalui integrasi nilai tauhid, adab, dan akhlak dalam setiap disiplin keilmuan.'",
+      priority: "TINGGI"
+    },
+    {
+      id: 12,
+      category: "D. Islamisasi Ilmu Pengetahuan",
+      code: "Kesatuan Ilmu (Unity of Knowledge)",
+      status: "sesuai_penuh",
+      quotation: "keterpaduan antar disiplin keilmuan menjadi hilang, dan melahirkan dikotomi",
+      location: "Paragraf 1, Kalimat 3",
+      analysis: "JELAS mengkritik hilangnya keterpaduan ilmu. Ini adalah konsep unity of knowledge Al-Attas. Dikotomi adalah lawan dari kesatuan ilmu.",
+      recommendation: "Sudah baik. Bisa diperkuat dengan menyebut 'kesatuan ilmu' (unity of knowledge) sebagai solusi.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 13,
+      category: "E. Antropologi Islam",
+      code: "Konsep Manusia (Insan)",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "TIDAK ADA pembahasan tentang hakikat manusia dalam Islam. Padahal konsep manusia (fisik-spiritual, jasad-akal-ruh) adalah fondasi pendidikan menurut Al-Attas.",
+      recommendation: "Tambahkan: 'Manusia (al-insan) dipahami sebagai makhluk yang terdiri dari jasad, akal, dan ruh. Pendidikan harus mengembangkan ketiga dimensi ini secara seimbang.'",
+      priority: "TINGGI"
+    },
+    {
+      id: 14,
+      category: "E. Antropologi Islam",
+      code: "Al-Insan al-Kamil",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada rujukan tentang tujuan membentuk 'manusia sempurna' atau 'manusia paripurna' (al-insan al-kamil).",
+      recommendation: "Tambahkan dalam tujuan pendidikan: 'Membentuk al-insan al-kamil (manusia sempurna) yang seimbang secara jasmaniah, intelektual, dan spiritual.'",
+      priority: "SEDANG"
+    },
+    {
+      id: 15,
+      category: "F. Tujuan Pendidikan",
+      code: "Pembentukan Manusia yang Baik (Good Man)",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada pernyataan eksplisit tentang tujuan membentuk 'manusia yang baik' (good man) secara individual. Al-Attas membedakan ini dari 'good citizen'.",
+      recommendation: "Tambahkan: 'Tujuan pendidikan adalah membentuk manusia yang baik (good man), bukan hanya warga negara yang baik.'",
+      priority: "SEDANG"
+    },
+    {
+      id: 16,
+      category: "F. Tujuan Pendidikan",
+      code: "Keadilan ('Adl)",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Konsep keadilan ('adl) dalam arti menempatkan sesuatu pada tempatnya yang tepat tidak muncul.",
+      recommendation: "Integrasikan konsep keadilan: 'Pendidikan mengajarkan keadilan ('adl), yaitu menempatkan setiap ilmu dan realitas pada tempatnya yang tepat dalam hierarki wujud.'",
+      priority: "RENDAH"
+    },
+    {
+      id: 17,
+      category: "G. Integrasi Dimensi Pendidikan",
+      code: "Integrasi Iman-Ilmu-Amal",
+      status: "sesuai_penuh",
+      quotation: "iman, ilmu, dan amal harus dijadikan domain pendidikan yang lebih penting dari domain kognitif, afektif dan psikomotorik",
+      location: "Paragraf 1, Kalimat 1",
+      analysis: "SANGAT EKSPLISIT. Ketiga dimensi disebutkan dan dijadikan prioritas di atas taksonomi Bloom. Ini selaras dengan pandangan holistik Al-Attas.",
+      recommendation: "Sudah sangat baik. Ini salah satu kekuatan utama teks.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 18,
+      category: "G. Integrasi Dimensi Pendidikan",
+      code: "Integrasi dengan Nilai Islam vs Taksonomi Bloom",
+      status: "sesuai_penuh",
+      quotation: "domain pendidikan yang lebih penting dari domain kognitif, afektif dan psikomotorik dari taxonomi bloom",
+      location: "Paragraf 1, Kalimat 1",
+      analysis: "JELAS mengkritik dominasi Taksonomi Bloom dan menempatkan iman-ilmu-amal sebagai domain yang lebih tinggi. Ini mencerminkan kritik Al-Attas terhadap framework Barat.",
+      recommendation: "Sudah sangat baik. Ini positioning yang tepat.",
+      priority: "SUDAH BAIK"
+    },
+    {
+      id: 19,
+      category: "H. Kurikulum Pendidikan Islam",
+      code: "Hierarki Ilmu Pengetahuan",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada penjelasan tentang struktur hierarkis ilmu pengetahuan dalam Islam.",
+      recommendation: "Tambahkan: 'Kurikulum disusun berdasarkan hierarki ilmu pengetahuan, dengan ilmu-ilmu keagamaan dasar (fardhu 'ain) sebagai fondasi, dan ilmu-ilmu aplikatif (fardhu kifayah) sebagai pengembangan.'",
+      priority: "TINGGI"
+    },
+    {
+      id: 20,
+      category: "H. Kurikulum Pendidikan Islam",
+      code: "Fardhu 'Ain",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Istilah 'fardhu 'ain' tidak muncul. Padahal ini penting untuk mengklasifikasi ilmu-ilmu wajib individual.",
+      recommendation: "Kategorikan mata kuliah: 'Mata kuliah tauhid, fikih, akhlak termasuk fardhu 'ain (wajib bagi setiap Muslim).'",
+      priority: "SEDANG"
+    },
+    {
+      id: 21,
+      category: "H. Kurikulum Pendidikan Islam",
+      code: "Fardhu Kifayah",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Istilah 'fardhu kifayah' tidak muncul untuk ilmu-ilmu kolektif/komunal.",
+      recommendation: "Kategorikan: 'Ilmu-ilmu kontemporer seperti manajemen pendidikan, psikologi pendidikan termasuk fardhu kifayah (wajib komunal).'",
+      priority: "SEDANG"
+    },
+    {
+      id: 22,
+      category: "I. Metode Pendidikan",
+      code: "Metode Tauhid",
+      status: "implisit",
+      quotation: "tauhid karena tauhid membangun kesadaran untuk mencari, mengembangkan dan mengamalkan ilmu",
+      location: "Paragraf 2, Kalimat 5",
+      analysis: "Tauhid disebutkan sebagai dasar, tapi tidak eksplisit sebagai METODE pembelajaran. Metode tauhid = cara mengajar yang memusatkan semua ilmu pada keesaan Allah.",
+      recommendation: "Jelaskan metode: 'Pembelajaran menggunakan metode tauhid, yaitu mengintegrasikan setiap materi dengan kesadaran ketuhanan dan keesaan Allah.'",
+      priority: "SEDANG"
+    },
+    {
+      id: 23,
+      category: "I. Metode Pendidikan",
+      code: "Metode Metafora dan Cerita",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada pembahasan tentang metode pengajaran konkret seperti metafora atau storytelling.",
+      recommendation: "Opsional. Bisa ditambahkan di bagian strategi pembelajaran.",
+      priority: "RENDAH"
+    },
+    {
+      id: 24,
+      category: "J. Worldview Islam",
+      code: "Pandangan Dunia Islam (Islamic Worldview)",
+      status: "implisit",
+      quotation: "pendidikan yang berperspektif Al-Qur'ani",
+      location: "Paragraf 2, Kalimat 4",
+      analysis: "'Perspektif Al-Qur'ani' adalah bagian dari worldview Islam, tapi istilah 'pandangan dunia Islam' (Islamic worldview) tidak digunakan eksplisit.",
+      recommendation: "Gunakan istilah: 'STAI UISU mengembangkan pendidikan berdasarkan pandangan dunia Islam (Islamic worldview) yang bersumber dari Al-Qur'an dan Sunnah.'",
+      priority: "SEDANG"
+    },
+    {
+      id: 25,
+      category: "K. Karakteristik Pendidik dan Peserta Didik",
+      code: "Pendidik Beradab",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada pembahasan tentang karakteristik atau kualifikasi pendidik yang beradab.",
+      recommendation: "Tambahkan: 'Pendidik harus memiliki adab yang baik, menjadi teladan dalam ilmu dan akhlak, serta memiliki kompetensi spiritual dan intelektual.'",
+      priority: "SEDANG"
+    },
+    {
+      id: 26,
+      category: "K. Karakteristik Pendidik dan Peserta Didik",
+      code: "Peserta Didik yang Mengembangkan Adab",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada pembahasan tentang karakteristik atau pembentukan adab peserta didik.",
+      recommendation: "Tambahkan: 'Peserta didik dibimbing untuk mengembangkan adab dalam menuntut ilmu, termasuk etika kepada guru, sesama, dan ilmu itu sendiri.'",
+      priority: "SEDANG"
+    },
+    {
+      id: 27,
+      category: "L. Nilai-nilai Karakter",
+      code: "Ikhlas",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Nilai keikhlasan dalam mencari ilmu tidak disebutkan.",
+      recommendation: "Tambahkan nilai: 'Pembelajaran menanamkan keikhlasan (ikhlas) dalam mencari ilmu semata-mata karena Allah.'",
+      priority: "RENDAH"
+    },
+    {
+      id: 28,
+      category: "L. Nilai-nilai Karakter",
+      code: "Sabar",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Nilai kesabaran tidak disebutkan.",
+      recommendation: "Opsional. Bisa diintegrasikan dalam nilai-nilai pembelajaran.",
+      priority: "RENDAH"
+    },
+    {
+      id: 29,
+      category: "L. Nilai-nilai Karakter",
+      code: "Jujur (Shidq)",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Nilai kejujuran ilmiah tidak disebutkan eksplisit.",
+      recommendation: "Opsional. Bisa diintegrasikan dalam integritas akademik.",
+      priority: "RENDAH"
+    },
+    {
+      id: 30,
+      category: "M. Konsep Tambahan",
+      code: "Desekularisasi",
+      status: "implisit",
+      quotation: "ilmu-ilmu umum berkembang tanpa sentuhan etika dan spritualitas agama",
+      location: "Paragraf 1, Kalimat 5",
+      analysis: "Kritik terhadap ilmu tanpa spiritualitas = upaya desekularisasi, tapi istilah tidak muncul.",
+      recommendation: "Bisa ditambahkan: 'Upaya desekularisasi dilakukan dengan mengembalikan dimensi spiritual dan etika religius dalam setiap ilmu.'",
+      priority: "RENDAH"
+    },
+    {
+      id: 31,
+      category: "M. Konsep Tambahan",
+      code: "Bahasa sebagai Pembentuk Pemikiran",
+      status: "tidak_ditemukan",
+      quotation: null,
+      location: null,
+      analysis: "Tidak ada pembahasan tentang pentingnya terminologi Arab dan bahasa dalam membentuk konsep yang benar.",
+      recommendation: "Opsional. Bisa ditambahkan: 'Penggunaan terminologi Arab yang tepat (seperti ta'dib, adab, 'ilm) penting untuk membentuk konsep pendidikan Islam yang benar.'",
+      priority: "RENDAH"
+    }
+  ];
+
+  // Statistics
+  const stats = {
+    sesuai_penuh: codingData.filter(d => d.status === 'sesuai_penuh').length,
+    implisit: codingData.filter(d => d.status === 'implisit').length,
+    tidak_ditemukan: codingData.filter(d => d.status === 'tidak_ditemukan').length
+  };
+
+  const filteredData = filterStatus === 'all' 
+    ? codingData 
+    : codingData.filter(d => d.status === filterStatus);
+
+  const getStatusIcon = (status) => {
+    switch(status) {
+      case 'sesuai_penuh':
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'implisit':
+        return <AlertCircle className="w-5 h-5 text-yellow-600" />;
+      case 'tidak_ditemukan':
+        return <XCircle className="w-5 h-5 text-red-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const badges = {
+      sesuai_penuh: 'bg-green-100 text-green-800',
+      implisit: 'bg-yellow-100 text-yellow-800',
+      tidak_ditemukan: 'bg-red-100 text-red-800'
+    };
+    const labels = {
+      sesuai_penuh: 'Sesuai Penuh',
+      implisit: 'Implisit/Substansi',
+      tidak_ditemukan: 'Tidak Ditemukan'
+    };
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badges[status]}`}>
+        {labels[status]}
+      </span>
+    );
+  };
+
+  const getPriorityBadge = (priority) => {
+    const badges = {
+      'TINGGI': 'bg-red-600 text-white',
+      'SEDANG': 'bg-orange-500 text-white',
+      'RENDAH': 'bg-blue-500 text-white',
+      'SUDAH BAIK': 'bg-green-600 text-white'
+    };
+    return (
+      <span className={`px-2 py-1 rounded text-xs font-bold ${badges[priority]}`}>
+        {priority}
+      </span>
+    );
+  };
+
+  return (
+    <div className="w-full max-w-7xl mx-auto p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        {/* Header */}
+        <div className="border-l-4 border-purple-600 pl-4 mb-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">
+            Penerapan 31 Indikator Al-Attas
+          </h1>
+          <p className="text-sm text-gray-600">
+            Content Analysis Manual Coding pada Teks Landasan Teologis Kurikulum PAI STAI UISU
+          </p>
+        </div>
+
+        {/* Statistics Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg p-4 text-white">
+            <div className="text-3xl font-bold">{codingData.length}</div>
+            <div className="text-sm opacity-90">Total Indikator</div>
+          </div>
+          <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-lg p-4 text-white">
+            <div className="text-3xl font-bold">{stats.sesuai_penuh}</div>
+            <div className="text-sm opacity-90">Sesuai Penuh ({Math.round(stats.sesuai_penuh/31*100)}%)</div>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-lg p-4 text-white">
+            <div className="text-3xl font-bold">{stats.implisit}</div>
+            <div className="text-sm opacity-90">Implisit ({Math.round(stats.implisit/31*100)}%)</div>
+          </div>
+          <div className="bg-gradient-to-br from-red-500 to-red-700 rounded-lg p-4 text-white">
+            <div className="text-3xl font-bold">{stats.tidak_ditemukan}</div>
+            <div className="text-sm opacity-90">Tidak Ditemukan ({Math.round(stats.tidak_ditemukan/31*100)}%)</div>
+          </div>
+        </div>
+
+        {/* Filter */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          <button
+            onClick={() => setFilterStatus('all')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
+              filterStatus === 'all'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Semua ({codingData.length})
+          </button>
+          <button
+            onClick={() => setFilterStatus('sesuai_penuh')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
+              filterStatus === 'sesuai_penuh'
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Sesuai Penuh ({stats.sesuai_penuh})
+          </button>
+          <button
+            onClick={() => setFilterStatus('implisit')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
+              filterStatus === 'implisit'
+                ? 'bg-yellow-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Implisit ({stats.implisit})
+          </button>
+          <button
+            onClick={() => setFilterStatus('tidak_ditemukan')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
+              filterStatus ===
+
+  </script>
+</body>
+</html>
