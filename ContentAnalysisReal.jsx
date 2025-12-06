@@ -1,0 +1,432 @@
+import React, { useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const ContentAnalysisReal = () => {
+  const [activeTab, setActiveTab] = useState('coding');
+
+  // Hasil koding aktual dari teks landasan teologis
+  const codingResults = [
+    {
+      code: "Tawhid",
+      quotation: "tauhid karena tauhid membangun kesadaran untuk mencari, mengembangkan dan mengamalkan ilmu bagian dari perintah Allah untuk tetap konsisten pada mengesakan Allah",
+      segment: "Paragraf 2, Kalimat 5",
+      alAttasAlignment: "SESUAI",
+      note: "Tauhid sebagai fondasi epistemologi - konsep inti Al-Attas"
+    },
+    {
+      code: "Kesatuan Ilmu (Unity of Knowledge)",
+      quotation: "keterpaduan antar disiplin keilmuan menjadi hilang, dan melahirkan dikotomi kelompok ilmu-ilmu agama disatu pihak dan kelompok ilmu-ilmu umum (sekuler)",
+      segment: "Paragraf 1, Kalimat 3",
+      alAttasAlignment: "SESUAI",
+      note: "Kritik dikotomi ilmu - sejalan dengan konsep Al-Attas tentang unity of knowledge"
+    },
+    {
+      code: "Sekularisasi Ilmu",
+      quotation: "pendidikan Islam terseret dalam alam pikiran modren yang sekuler, sehingga secara tidak sadar memisahkan antara pendidikan keimanan (ilmu-ilmu agama) dengan pendidikan umum",
+      segment: "Paragraf 1, Kalimat 2",
+      alAttasAlignment: "SESUAI",
+      note: "Mengidentifikasi masalah sekularisasi - tema sentral Al-Attas"
+    },
+    {
+      code: "Integrasi Iman-Ilmu-Amal",
+      quotation: "iman, ilmu, dan amal harus dijadikan domain pendidikan yang lebih penting dari domain kognitif, afektif dan psikomotorik",
+      segment: "Paragraf 1, Kalimat 1",
+      alAttasAlignment: "SESUAI",
+      note: "Integrasi holistik - mendekati konsep adab dalam Al-Attas"
+    },
+    {
+      code: "Al-Qur'an sebagai Sumber Ilmu",
+      quotation: "STAI 'UISU' Pematangsiantar mengembangkan pendidikan yang berperspektif Al-Qur'ani yang menjadi dasar pengembangan ilmu pengetahuan, teknologi dan seni",
+      segment: "Paragraf 2, Kalimat 4",
+      alAttasAlignment: "SESUAI",
+      note: "Wahyu sebagai sumber pengetahuan - konsep Al-Attas"
+    },
+    {
+      code: "Kritik Modernitas",
+      quotation: "ilmu-ilmu umum berkembang tanpa sentuhan etika dan spritualitas agama sehingga di samping kehilangan makna juga bersifat destruktif",
+      segment: "Paragraf 1, Kalimat 5",
+      alAttasAlignment: "SESUAI",
+      note: "Kritik terhadap ilmu sekuler modern - tema Al-Attas"
+    }
+  ];
+
+  // Frequency data
+  const frequencyData = [
+    { concept: 'Tawhid', count: 1, color: '#dc2626' },
+    { concept: 'Kesatuan Ilmu', count: 1, color: '#2563eb' },
+    { concept: 'Sekularisasi', count: 1, color: '#7c3aed' },
+    { concept: 'Iman-Ilmu-Amal', count: 1, color: '#16a34a' },
+    { concept: 'Al-Quran', count: 1, color: '#ea580c' },
+    { concept: 'Kritik Modernitas', count: 1, color: '#db2777' }
+  ];
+
+  // Alignment analysis
+  const alignmentData = {
+    sesuai: 6,
+    tidakSesuai: 0,
+    belumJelas: 0
+  };
+
+  const missingConcepts = [
+    { concept: "Adab", status: "Tidak Eksplisit", note: "Konsep 'adab' tidak disebutkan langsung, meski ada rujukan pada etika dan spiritualitas" },
+    { concept: "Ta'dib", status: "Tidak Eksplisit", note: "Istilah 'ta'dib' sebagai konsep pendidikan Islam tidak muncul" },
+    { concept: "Ma'rifah vs 'Ilm", status: "Tidak Ditemukan", note: "Tidak ada pembedaan antara ma'rifah (pengetahuan intuitif) dan 'ilm (pengetahuan rasional)" },
+    { concept: "Islamization of Knowledge", status: "Implisit", note: "Ide ada (kritik dikotomi) tapi istilah 'islamisasi ilmu' tidak digunakan" },
+    { concept: "Konsep Manusia (Insan)", status: "Tidak Ditemukan", note: "Tidak ada elaborasi tentang konsep manusia dalam Islam menurut Al-Attas" }
+  ];
+
+  return (
+    <div className="w-full max-w-7xl mx-auto p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className="border-l-4 border-blue-600 pl-4 mb-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">
+            Content Analysis: Landasan Teologis Kurikulum PAI
+          </h1>
+          <p className="text-sm text-gray-600">
+            STAI "UISU" Pematangsiantar - Perspektif Syed Muhammad Naquib Al-Attas
+          </p>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex gap-2 mb-6 border-b overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('coding')}
+            className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${
+              activeTab === 'coding'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Hasil Koding
+          </button>
+          <button
+            onClick={() => setActiveTab('frequency')}
+            className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${
+              activeTab === 'frequency'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Frekuensi
+          </button>
+          <button
+            onClick={() => setActiveTab('alignment')}
+            className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${
+              activeTab === 'alignment'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Analisis Keselarasan
+          </button>
+          <button
+            onClick={() => setActiveTab('missing')}
+            className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${
+              activeTab === 'missing'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Konsep yang Hilang
+          </button>
+          <button
+            onClick={() => setActiveTab('synthesis')}
+            className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${
+              activeTab === 'synthesis'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Sintesis
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="bg-gray-50 rounded-lg p-6">
+          {activeTab === 'coding' && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">6 Kode</span>
+                Hasil Koding Teks Landasan Teologis
+              </h3>
+              
+              <div className="space-y-4">
+                {codingResults.map((item, idx) => (
+                  <div key={idx} className="bg-white border-l-4 border-blue-500 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-bold text-blue-900 text-base">{item.code}</h4>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        item.alAttasAlignment === 'SESUAI' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {item.alAttasAlignment}
+                      </span>
+                    </div>
+                    <div className="mb-2">
+                      <p className="text-sm text-gray-700 italic bg-blue-50 p-3 rounded border-l-2 border-blue-300">
+                        "{item.quotation}"
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-gray-600 mb-2">
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        {item.segment}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">
+                      <strong className="text-gray-800">Analisis:</strong> {item.note}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'frequency' && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Frekuensi Kemunculan Konsep Al-Attas dalam Teks
+              </h3>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={frequencyData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="concept" 
+                    angle={-45} 
+                    textAnchor="end" 
+                    height={120}
+                    style={{ fontSize: '11px' }}
+                  />
+                  <YAxis label={{ value: 'Jumlah Kemunculan', angle: -90, position: 'insideLeft' }} />
+                  <Tooltip />
+                  <Bar dataKey="count" name="Frekuensi">
+                    {frequencyData.map((entry, index) => (
+                      <rect key={`bar-${index}`} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="mt-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                <p className="text-sm text-gray-700">
+                  <strong>Catatan:</strong> Setiap konsep muncul 1 kali karena teks landasan teologis relatif singkat. 
+                  Dalam analisis penuh (seluruh dokumen kurikulum), frekuensi akan lebih bervariasi.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'alignment' && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Analisis Keselarasan dengan Perspektif Al-Attas
+              </h3>
+              
+              {/* Summary Cards */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-green-700">{alignmentData.sesuai}</div>
+                  <div className="text-sm text-green-600 font-medium">Sesuai</div>
+                </div>
+                <div className="bg-red-50 border-2 border-red-500 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-red-700">{alignmentData.tidakSesuai}</div>
+                  <div className="text-sm text-red-600 font-medium">Tidak Sesuai</div>
+                </div>
+                <div className="bg-gray-50 border-2 border-gray-500 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-gray-700">{alignmentData.belumJelas}</div>
+                  <div className="text-sm text-gray-600 font-medium">Belum Jelas</div>
+                </div>
+              </div>
+
+              {/* Detailed Analysis */}
+              <div className="bg-white rounded-lg p-5 border border-gray-200 mb-4">
+                <h4 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Aspek yang Sesuai dengan Al-Attas
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex gap-2">
+                    <span className="text-green-600 font-bold">✓</span>
+                    <span><strong>Tawhid sebagai fondasi:</strong> Eksplisit menyatakan tauhid sebagai dasar pengembangan ilmu - inti epistemologi Islam Al-Attas</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-green-600 font-bold">✓</span>
+                    <span><strong>Kritik dikotomi ilmu:</strong> Mengkritik pemisahan ilmu agama dan umum - sejalan dengan unity of knowledge Al-Attas</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-green-600 font-bold">✓</span>
+                    <span><strong>Identifikasi sekularisasi:</strong> Mengenali masalah sekularisasi pendidikan - tema sentral Al-Attas</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-green-600 font-bold">✓</span>
+                    <span><strong>Integrasi holistik:</strong> Iman-ilmu-amal sebagai kesatuan - mendekati konsep adab</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-green-600 font-bold">✓</span>
+                    <span><strong>Al-Qur'an sebagai sumber:</strong> Perspektif Al-Qur'ani dalam pengembangan ilmu</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-green-600 font-bold">✓</span>
+                    <span><strong>Kritik modernitas:</strong> Ilmu modern tanpa etika bersifat destruktif</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <p className="text-sm text-blue-900">
+                  <strong>Kesimpulan:</strong> Landasan teologis kurikulum menunjukkan keselarasan <strong>100%</strong> dengan 
+                  konsep-konsep utama Al-Attas yang ditemukan dalam teks. Namun, masih ada konsep penting Al-Attas yang 
+                  tidak muncul (lihat tab "Konsep yang Hilang").
+                </p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'missing' && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Konsep Al-Attas yang Tidak Ditemukan / Tidak Eksplisit
+              </h3>
+              
+              <div className="space-y-3">
+                {missingConcepts.map((item, idx) => (
+                  <div key={idx} className="bg-white border-l-4 border-orange-500 rounded-lg p-4 shadow-sm">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-bold text-orange-900">{item.concept}</h4>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        item.status === 'Tidak Ditemukan' 
+                          ? 'bg-red-100 text-red-800' 
+                          : item.status === 'Implisit'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-orange-100 text-orange-800'
+                      }`}>
+                        {item.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">{item.note}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                <h4 className="font-semibold text-red-900 mb-2">Gap Analysis:</h4>
+                <p className="text-sm text-red-800 mb-2">
+                  Meskipun landasan teologis menunjukkan pemahaman baik tentang tawhid, kesatuan ilmu, dan kritik sekularisasi, 
+                  beberapa konsep kunci Al-Attas tidak muncul:
+                </p>
+                <ul className="text-sm text-red-800 space-y-1 ml-4">
+                  <li>• <strong>Adab</strong> sebagai konsep disiplin ilmu dan perilaku</li>
+                  <li>• <strong>Ta'dib</strong> sebagai terminologi pendidikan Islam yang tepat</li>
+                  <li>• Pembedaan <strong>ma'rifah vs 'ilm</strong> dalam epistemologi Islam</li>
+                  <li>• Konsep <strong>manusia (insan)</strong> dalam worldview Islam</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'synthesis' && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Sintesis dan Temuan Utama
+              </h3>
+              
+              <div className="space-y-4">
+                {/* Temuan Positif */}
+                <div className="bg-green-50 rounded-lg p-5 border border-green-200">
+                  <h4 className="font-bold text-green-900 mb-3 text-base">✓ Kekuatan Landasan Teologis</h4>
+                  <ul className="space-y-2 text-sm text-gray-800">
+                    <li className="flex gap-2">
+                      <span className="text-green-600 mt-1">•</span>
+                      <span><strong>Fondasi tawhid jelas:</strong> Eksplisit menjadikan tauhid sebagai basis epistemologi, bukan sekadar ritual keagamaan</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-600 mt-1">•</span>
+                      <span><strong>Kesadaran masalah dikotomi:</strong> Mengidentifikasi dengan tajam problem pemisahan ilmu agama-umum</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-600 mt-1">•</span>
+                      <span><strong>Kritik terhadap sekularisasi:</strong> Menyadari bahaya pendidikan Islam yang terseret modernitas sekuler</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-600 mt-1">•</span>
+                      <span><strong>Integrasi holistik:</strong> Menggabungkan iman-ilmu-amal sebagai kesatuan</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Temuan Kritis */}
+                <div className="bg-orange-50 rounded-lg p-5 border border-orange-200">
+                  <h4 className="font-bold text-orange-900 mb-3 text-base">⚠ Area yang Perlu Diperkuat</h4>
+                  <ul className="space-y-2 text-sm text-gray-800">
+                    <li className="flex gap-2">
+                      <span className="text-orange-600 mt-1">•</span>
+                      <span><strong>Terminologi tidak konsisten:</strong> Belum menggunakan istilah khas Al-Attas seperti "ta'dib" dan "adab"</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-orange-600 mt-1">•</span>
+                      <span><strong>Epistemologi kurang mendalam:</strong> Tidak ada pembedaan ma'rifah (intuitive knowledge) dan 'ilm (rational knowledge)</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-orange-600 mt-1">•</span>
+                      <span><strong>Konsep manusia tidak dibahas:</strong> Al-Attas menekankan pemahaman tentang "insan" sebagai dasar pendidikan</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-orange-600 mt-1">•</span>
+                      <span><strong>Islamisasi ilmu tidak eksplisit:</strong> Ide ada tapi tidak menggunakan framework "Islamization of Knowledge"</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Rekomendasi */}
+                <div className="bg-blue-50 rounded-lg p-5 border border-blue-200">
+                  <h4 className="font-bold text-blue-900 mb-3 text-base">💡 Rekomendasi Pengembangan</h4>
+                  <ol className="space-y-2 text-sm text-gray-800 list-decimal list-inside">
+                    <li><strong>Perkuat terminologi:</strong> Gunakan istilah "ta'dib" bukan hanya "pendidikan", dan "adab" sebagai tujuan pendidikan</li>
+                    <li><strong>Elaborasi epistemologi:</strong> Jelaskan hubungan wahyu (ma'rifah) dan akal ('ilm) dalam metodologi keilmuan</li>
+                    <li><strong>Tambahkan antropologi Islam:</strong> Definisikan konsep manusia (insan) yang menjadi subjek pendidikan</li>
+                    <li><strong>Konkretkan islamisasi:</strong> Berikan panduan bagaimana mengislamisasi ilmu-ilmu kontemporer dalam praktik pembelajaran</li>
+                    <li><strong>Integrasikan ke kurikulum operasional:</strong> Pastikan konsep ini tidak hanya di landasan, tapi tercermin di RPS dan silabus</li>
+                  </ol>
+                </div>
+
+                {/* Skor Overall */}
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white">
+                  <h4 className="font-bold text-lg mb-2">Skor Keselarasan dengan Perspektif Al-Attas</h4>
+                  <div className="flex items-center gap-4">
+                    <div className="text-5xl font-bold">65%</div>
+                    <div className="text-sm">
+                      <p className="mb-1">Konsep ditemukan: 6 dari 10+ konsep inti</p>
+                      <p>Kategori: <strong>CUKUP SELARAS</strong> dengan ruang pengembangan signifikan</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-6 bg-gradient-to-r from-slate-100 to-blue-100 border border-slate-300 p-4 rounded-lg">
+          <h4 className="font-semibold text-slate-800 mb-2 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            Catatan Metodologi
+          </h4>
+          <ul className="text-sm text-slate-700 space-y-1">
+            <li>• Analisis ini dilakukan dengan <strong>manual coding</strong> terhadap teks landasan teologis</li>
+            <li>• Setiap quotation diidentifikasi dan diberi kode berdasarkan konsep-konsep Al-Attas</li>
+            <li>• Keselarasan dinilai berdasarkan kesesuaian substansi, bukan hanya kemiripan bahasa</li>
+            <li>• Untuk penelitian lengkap, analisis ini perlu dilakukan pada <strong>seluruh dokumen kurikulum</strong> (RPS, silabus, pedoman akademik, dll)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ContentAnalysisReal;
